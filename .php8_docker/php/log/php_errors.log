@@ -1,0 +1,4 @@
+[21-Dec-2020 15:45:17 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Unknown named parameter $name in /var/www/html/named_args.php:7
+Stack trace:
+#0 {main}
+  thrown in /var/www/html/named_args.php on line 7
