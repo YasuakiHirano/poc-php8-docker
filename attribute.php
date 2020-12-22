@@ -6,7 +6,7 @@ class Author {
 
     public function __construct($value)
     {
-        $this->value = "create user: " . $value;
+        $this->value = $value;
     }
 }
 
@@ -39,30 +39,29 @@ class User {
        $this->name = $name; 
        $this->gender = $gender; 
     }
-}
 
+    /**
+     * 必須項目が入っているかチェックする
+     * @param void
+     * @return array $errors エラーテキストの配列
+     */
+    public function validate() {
+        $errors = [];
+        $reflection = new ReflectionClass($this);
+        $props = $reflection->getProperties();
+        foreach ($props as $prop) {
+            $attribute = $prop->getAttributes() ? $prop->getAttributes()[0] : null;
 
-/**
- * Userを渡して、必須項目が入っているかチェックする
- * @param User $user
- * @return array $errors エラーテキストの配列
- */
-function checkUserRequired(User $user) {
-    $errors = [];
-    $reflection = new ReflectionClass($user);
-    $props = $reflection->getProperties();
-    foreach ($props as $prop) {
-        $attribute = $prop->getAttributes() ? $prop->getAttributes()[0] : null;
-
-        if ($attribute && $attribute->getName() === 'Required') {
-            $value = $prop->getValue($user);
-            if (!$value) {
-                array_push($errors, $prop->getName() . 'には値を入れてください。');
+            if ($attribute && $attribute->getName() === 'Required') {
+                $value = $prop->getValue($this);
+                if (!$value) {
+                    array_push($errors, $prop->getName() . 'には値を入れてください。');
+                }
             }
         }
-    }
 
-    return $errors;
+        return $errors;
+    }
 }
 
 /**
@@ -82,24 +81,24 @@ function main() {
     echo "空チェック属性を使ったテスト\n";
     echo "----- test1 start -----\n";
     $user = new User(19, 'yamada', 1);
-    $errors = checkUserRequired(user: $user);
-    if (checkUserRequired(user: $user)) {
+    $errors = $user->validate();
+    if ($errors) {
         var_dump($errors);
     }
     echo "----- test1 end -----\n\n";
 
     echo "----- test2 start -----\n";
     $user = new User(30, null, null);
-    $errors = checkUserRequired(user: $user);
-    if (checkUserRequired(user: $user)) {
+    $errors = $user->validate();
+    if ($errors) {
         var_dump($errors);
     }
     echo "----- test2 end -----\n\n";
 
     echo "----- test3 start -----\n";
     $user = new User(null, null, 1);
-    $errors = checkUserRequired(user: $user);
-    if (checkUserRequired(user: $user)) {
+    $errors = $user->validate();
+    if ($errors) {
         var_dump($errors);
     }
     echo "----- test3 end -----\n";
