@@ -3,7 +3,7 @@
 // match(8から使える)
 
 // 型と完全一致(===)
-$score = '1';
+$score = 1;
 $result = match ($score) {
     1 => '一',
     2 => '二',
